@@ -1,0 +1,194 @@
+﻿namespace alchemist {
+    internal class Program {
+        static void Main(string[] args) {
+
+            Console.WriteLine("Welcome to Alchemist!");
+            Console.WriteLine("to start new game press 1\nTo load save press 2 \nto quit game press 3");
+            int menuwyb = Int32.Parse(Console.ReadLine());
+            do {
+                if (menuwyb < 1 || menuwyb > 3) {
+                    NewGame();
+                } else if (menuwyb == 2) {
+                    Console.WriteLine("Loading Game");
+                } else if (menuwyb == 3) {
+                    Console.WriteLine("Quitting Game\nThanks for playing!");
+                    Environment.Exit(0);
+                }
+
+
+            } while (menuwyb > 1 || menuwyb < 4);
+        }
+
+        static void NewGame() {
+            int miasma, blood, ardent;
+            int gift = 0;
+            int gold = 0;
+            int[] igri = new int[5]; // 0 health potion, 1 mana potion, 2 stamina potion
+            Console.WriteLine("Welcom to your new job acolyte. As your supervisor i hope we will work well togheter.");
+            Console.WriteLine("Your job will be making potion, buying supplies and selling potions to our brave paladin.\nLet me show all the fundaments, we have three basic funtaments of alchemy Miasma, Blood and ardent.\nWe also use more comples herbs or alchemist parts. Here are your statrting supplies:");
+            miasma = 5;
+            blood = 5;
+            ardent = 5;
+            displaystats(miasma, blood, ardent, gold, igri);
+            Console.WriteLine("I hope you are ready. Yes/No");
+            string Newchoise = Console.ReadLine();
+            if (Newchoise == "Yes") {
+                Console.WriteLine("Good luck acolyte");
+            } else {
+                Console.WriteLine("Tough luck acolyte, you are starting now.");
+            }
+            menu(miasma, blood, ardent, gold, igri, gift);
+        }
+
+        static int displaystats(int miasma, int blood, int ardent, int gold, int[] igri) {
+            Console.WriteLine("You have:\n" + miasma + " Miasma\n" + blood + " Blood\n" + ardent + " Ardent\n" + gold + " Gold");
+            Console.WriteLine("You also have following items:");
+
+            return 0;
+        }
+
+        static void menu(int miasma, int blood, int ardent, int gold, int[] igri, int gift) {
+            do {
+                Console.WriteLine("Your station. You see alchemist tools, your window and other construt walking aroud.\nWhat would you like to do?\n1. Make Potion\n2. Buy Supplies\n3. Sell Potions\n4. View Stats\n5. Save Game\n6. Quit Game");
+                int menuwyb = Int32.Parse(Console.ReadLine());
+                displaystats(miasma, blood, ardent, gold, igri);
+                switch (menuwyb) {
+                    case 1:
+                        (miasma, blood, ardent, gold, igri) = alchemy(miasma, blood, ardent, gold, igri);
+                        break;
+                    case 2:
+                        (miasma, blood, ardent, gold, gift) = shop(miasma, blood, ardent, gold, gift);
+                        break;
+                    case 6:
+                        Console.WriteLine("Quitting Game\nThanks for playing!");
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        Console.WriteLine("[Wrong command]");
+                        break;
+                }
+            } while (true);
+        }
+
+
+        static (int, int, int, int, int[]) alchemy(int miasma, int blood, int ardent, int gold, int[] igri) {
+            Console.WriteLine("You approach your alchemist table. What potion would you like to make?\n1. Health Potion (2 Blood, 1 Ardent)\n2. Mana Potion (2 Blood, 1 miasma)\n3. Back to Menu");
+            int alchwyb = Int32.Parse(Console.ReadLine());
+            bool continueLoop = true;
+            do {
+                switch (alchwyb) {
+                    case 1:
+                        if (blood >= 2 && ardent >= 1) {
+                            blood -= 2;
+                            ardent -= 1;
+                            igri[0] += 1;
+                        } else {
+                            Console.WriteLine("Not enough resources to make Health Potion");
+                        }
+                        break;
+                    case 2:
+                        if (blood >= 2 && miasma >= 1) {
+                            blood -= 2;
+                            miasma -= 1;
+                            igri[1] += 1;
+                        }
+                        break;
+                    case 3:
+                        continueLoop = false;
+                        break;
+                    default:
+                        Console.WriteLine("[Wrong command]");
+                        break;
+                }
+            } while (continueLoop == true);
+            return (miasma, blood, ardent, gold, igri);
+        }
+
+        static (int, int, int, int, int) shop(int miasma, int blood, int ardent, int gold, int gift) {
+            Console.WriteLine("You approach the shop. Green eyed contruct looks at you, her eyes are happy. 'Hello, what can i give you?'\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 blood)\n4.talk\n5.Get back to lab");
+            bool continueLoop = true;
+            do {
+                int shopwyb = Int32.Parse(Console.ReadLine());
+                switch (shopwyb) {
+                    case 1:
+                        if (gold >= 2) {
+                            gold -= 2;
+                            miasma += 1;
+                        } else {
+                            Console.WriteLine("Not enough gold");
+                        }
+                        break;
+                    case 2:
+                        if (gold >= 2) {
+                            gold -= 2;
+                            ardent += 1;
+                        } else {
+                            Console.WriteLine("Not enough gold");
+                        }
+                        break;
+                    case 3:
+                        if (gold >= 1) {
+                            gold -= 1;
+                            blood += 1;
+                        } else {
+                            Console.WriteLine("Not enough gold");
+                        }
+                        break;
+                    case 4:
+                        talk(blood, gift);
+                        break;
+                    case 5:
+                        continueLoop = false;
+                        break;
+                    default:
+                        Console.WriteLine("[Wrong command]");
+                        break;
+                }
+            } while (continueLoop == true);
+            return (miasma, blood, ardent, gold, gift);
+        }
+        static (int, int) talk(int blood, int gift) {
+            Console.WriteLine("Hello Miss, I am Clara, i hope we will get along? I see you are new here. Ask me anything you want.\n1.I am new acolyte, i have shop near you\n2.Do you know what happend to previous acolyte?\n3.How is your day?\n4.Goodbye");
+            int talkwyb = Int32.Parse(Console.ReadLine());
+            bool continueLoop = true;
+            Random rnd = new Random();
+            int daymood = rnd.Next(1, 4);
+            do {
+                
+                switch (talkwyb) {
+                    case 1:
+                        if (gift == 0) {
+                            Console.WriteLine("Oh, then i hope you will have a great time at here. It got bored seeing all the figting and sacrate units.\nHere, lifftle gift from me");
+                            blood += 5;
+                            gift++;
+                        }else {
+                            Console.WriteLine("I hope you are enjoying your job here.");
+                        }
+                        break;
+                    case 2:
+                        Console.WriteLine("I heard she had an accident. Maybe she was moved. But alsop she didnt get alonmg well with one guy. ");
+                        break;
+                    case 3:
+                        if (daymood == 1) {
+                            Console.WriteLine("Oh, today is great day! I sold a lot of alchemy elements");
+                        } else if (daymood == 2) {
+                            Console.WriteLine("Oh, today is normal day. Nothing special, buiznsess as usual");
+                        } else {
+                            Console.WriteLine("Oh, today is bad day. I cant sell anything... maybe you can buy something");
+                        }
+                        break;
+                    case 4:
+                        continueLoop = false;
+                        break;
+                    default:
+                        Console.WriteLine("[Wrong command]");
+                        break;
+
+                }
+
+
+            } while (continueLoop == true);
+            
+            return (blood, gift);
+        }
+    } }
