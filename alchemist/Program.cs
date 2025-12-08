@@ -4,9 +4,10 @@
 
             Console.WriteLine("Welcome to Alchemist!");
             Console.WriteLine("to start new game press 1\nTo load save press 2 \nto quit game press 3");
-            int menuwyb = Int32.Parse(Console.ReadLine());
+           
             
             do {
+                int menuwyb = Int32.Parse(Console.ReadLine());
                 switch (menuwyb) {
                     case 1:
                         NewGame();
@@ -67,6 +68,9 @@
                     case 2:
                         (miasma, blood, ardent, gold, gift) = shop(miasma, blood, ardent, gold, gift);
                         break;
+                    case 4:
+                                                displaystats(miasma, blood, ardent, gold, igri);
+                        break;
                     case 6:
                         Console.WriteLine("Quitting Game\nThanks for playing!");
                         Environment.Exit(0);
@@ -90,6 +94,7 @@
                             blood -= 2;
                             ardent -= 1;
                             igri[0] += 1;
+                            Console.WriteLine("Potion made successfully, you have:" + igri[0]);
                         } else {
                             Console.WriteLine("Not enough resources to make Health Potion");
                         }
@@ -99,6 +104,7 @@
                             blood -= 2;
                             miasma -= 1;
                             igri[1] += 1;
+                            Console.WriteLine("Potion made successfully, you have:"+ igri[0]);
                         }
                         break;
                     case 3:
@@ -156,13 +162,12 @@
             return (miasma, blood, ardent, gold, gift);
         }
         static (int, int) talk(int blood, int gift) {
-            Console.WriteLine("Hello Miss, I am Clara, i hope we will get along? I see you are new here. Ask me anything you want.\n1.I am new acolyte, i have shop near you\n2.Do you know what happend to previous acolyte?\n3.How is your day?\n4.Goodbye");
-            int talkwyb = Int32.Parse(Console.ReadLine());
             bool continueLoop = true;
             Random rnd = new Random();
             int daymood = rnd.Next(1, 4);
+            Console.WriteLine("Hello Miss, I am Clara, i hope we will get along? I see you are new here. Ask me anything you want.\n1.I am new acolyte, i have shop near you\n2.Do you know what happend to previous acolyte?\n3.How is your day?\n4.Goodbye");
             do {
-                
+                int talkwyb = Int32.Parse(Console.ReadLine());
                 switch (talkwyb) {
                     case 1:
                         if (gift == 0) {
