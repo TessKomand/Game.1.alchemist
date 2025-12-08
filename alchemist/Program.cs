@@ -5,18 +5,25 @@
             Console.WriteLine("Welcome to Alchemist!");
             Console.WriteLine("to start new game press 1\nTo load save press 2 \nto quit game press 3");
             int menuwyb = Int32.Parse(Console.ReadLine());
+            
             do {
-                if (menuwyb < 1 || menuwyb > 3) {
-                    NewGame();
-                } else if (menuwyb == 2) {
-                    Console.WriteLine("Loading Game");
-                } else if (menuwyb == 3) {
-                    Console.WriteLine("Quitting Game\nThanks for playing!");
-                    Environment.Exit(0);
+                switch (menuwyb) {
+                    case 1:
+                        NewGame();
+                        break;
+                    case 2:
+                        Console.WriteLine("Load Game feature not implemented yet");
+                        break;
+                    case 3:
+                        Console.WriteLine("Quitting Game\nThanks for playing!");
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        Console.WriteLine("[Wrong command]");
+                        break;
                 }
 
-
-            } while (menuwyb > 1 || menuwyb < 4);
+            } while (true);
         }
 
         static void NewGame() {
@@ -24,8 +31,8 @@
             int gift = 0;
             int gold = 0;
             int[] igri = new int[5]; // 0 health potion, 1 mana potion, 2 stamina potion
-            Console.WriteLine("Welcom to your new job acolyte. As your supervisor i hope we will work well togheter.");
-            Console.WriteLine("Your job will be making potion, buying supplies and selling potions to our brave paladin.\nLet me show all the fundaments, we have three basic funtaments of alchemy Miasma, Blood and ardent.\nWe also use more comples herbs or alchemist parts. Here are your statrting supplies:");
+            Console.WriteLine("Welcome to your new job acolyte. As your supervisor i hope we will work well togheter.");
+            Console.WriteLine("Your job will be making potion, buying supplies and selling potions to our brave paladin.\nLet me show all the fundaments, we have three basic funtaments of alchemy Miasma, Blood and ardent.\nWe also use more comples herbs or alchemist parts. Here are your starting supplies:");
             miasma = 5;
             blood = 5;
             ardent = 5;
@@ -43,13 +50,14 @@
         static int displaystats(int miasma, int blood, int ardent, int gold, int[] igri) {
             Console.WriteLine("You have:\n" + miasma + " Miasma\n" + blood + " Blood\n" + ardent + " Ardent\n" + gold + " Gold");
             Console.WriteLine("You also have following items:");
+            Console.WriteLine(igri[0] + " Health Potions\n" + igri[1] + " Mana Potions\n" + igri[2]);
 
             return 0;
         }
 
         static void menu(int miasma, int blood, int ardent, int gold, int[] igri, int gift) {
             do {
-                Console.WriteLine("Your station. You see alchemist tools, your window and other construt walking aroud.\nWhat would you like to do?\n1. Make Potion\n2. Buy Supplies\n3. Sell Potions\n4. View Stats\n5. Save Game\n6. Quit Game");
+                Console.WriteLine("Your station. You see alchemist tools, your window and other construct walking aroud.\nWhat would you like to do?\n1. Make Potion\n2. Buy Supplies\n3. Sell Potions\n4. View Stats\n5. Save Game\n6. Quit Game");
                 int menuwyb = Int32.Parse(Console.ReadLine());
                 displaystats(miasma, blood, ardent, gold, igri);
                 switch (menuwyb) {
@@ -73,9 +81,9 @@
 
         static (int, int, int, int, int[]) alchemy(int miasma, int blood, int ardent, int gold, int[] igri) {
             Console.WriteLine("You approach your alchemist table. What potion would you like to make?\n1. Health Potion (2 Blood, 1 Ardent)\n2. Mana Potion (2 Blood, 1 miasma)\n3. Back to Menu");
-            int alchwyb = Int32.Parse(Console.ReadLine());
             bool continueLoop = true;
             do {
+                int alchwyb = Int32.Parse(Console.ReadLine());
                 switch (alchwyb) {
                     case 1:
                         if (blood >= 2 && ardent >= 1) {
@@ -135,7 +143,7 @@
                         }
                         break;
                     case 4:
-                        talk(blood, gift);
+                        (blood, gift) = talk(blood, gift);
                         break;
                     case 5:
                         continueLoop = false;
