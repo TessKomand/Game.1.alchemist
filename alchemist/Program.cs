@@ -4,8 +4,8 @@
 
             Console.WriteLine("Welcome to Alchemist!");
             Console.WriteLine("to start new game press 1\nTo load save press 2 \nto quit game press 3");
-           
-            
+
+
             do {
                 int menuwyb = Int32.Parse(Console.ReadLine());
                 switch (menuwyb) {
@@ -60,7 +60,7 @@
             do {
                 Console.WriteLine("Your station. You see alchemist tools, your window and other construct walking aroud.\nWhat would you like to do?\n1. Make Potion\n2. Buy Supplies\n3. Sell Potions\n4. View Stats\n5. Save Game\n6. Quit Game");
                 int menuwyb = Int32.Parse(Console.ReadLine());
-                
+
                 switch (menuwyb) {
                     case 1:
                         (miasma, blood, ardent, gold, igri) = alchemy(miasma, blood, ardent, gold, igri);
@@ -69,8 +69,11 @@
                         (miasma, blood, ardent, gold, gift) = shop(miasma, blood, ardent, gold, gift);
 
                         break;
+                    case 3:
+                        (miasma, blood, ardent, gold, igri) = sell(miasma, blood, ardent, gold, igri);
+                        break;
                     case 4:
-                                                displaystats(miasma, blood, ardent, gold, igri);
+                        displaystats(miasma, blood, ardent, gold, igri);
                         break;
                     case 6:
                         Console.WriteLine("Quitting Game\nThanks for playing!");
@@ -105,7 +108,7 @@
                             blood -= 2;
                             miasma -= 1;
                             igri[1] += 1;
-                            Console.WriteLine("Potion made successfully, you have:"+ igri[0]);
+                            Console.WriteLine("Potion made successfully, you have:" + igri[1]);
                         }
                         break;
                     case 3:
@@ -120,7 +123,7 @@
         }
 
         static (int, int, int, int, int) shop(int miasma, int blood, int ardent, int gold, int gift) {
-            Console.WriteLine("You approach the shop. Green eyed contruct looks at you, her eyes are happy. 'Hello, what can i give you?'\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 blood)\n4.talk\n5.Get back to lab");
+            Console.WriteLine("You approach the shop. Green eyed contruct looks at you, her eyes are happy. 'Hello, what can i give you?'\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 gold)\n4.talk\n5.Get back to lab");
             bool continueLoop = true;
             while (continueLoop == true) {
                 int shopwyb = Int32.Parse(Console.ReadLine());
@@ -176,7 +179,7 @@
                             Console.WriteLine("Oh, then i hope you will have a great time at here. It got bored seeing all the figting and sacrate units.\nHere, lifftle gift from me");
                             blood += 5;
                             gift++;
-                        }else {
+                        } else {
                             Console.WriteLine("I hope you are enjoying your job here.");
                         }
                         break;
@@ -201,8 +204,77 @@
                 }
 
 
-            } 
-            
+            }
+
             return (blood, gift);
         }
-    } }
+
+        static (int, int, int, int, int[]) sell(int miasma, int blood, int ardent, int gold, int[] igri) {
+            Console.WriteLine("You enter front of your shop, symbol of 3ight goddess is near your table. few of customers get in. Mostly paladins and warriors.\n1.help customer\n2.check your stash\n3.go back into the back of a store.");
+            bool continueLoop = true;
+            string typepotion = "none";
+            Random rnd = new Random();
+            while (continueLoop == true) {
+                int sellwyb = Int32.Parse(Console.ReadLine());
+                switch (sellwyb) {
+                    case 1:
+                        int type = rnd.Next(1, 4);
+                        int ammount = rnd.Next(1, 4);
+                        switch (type) {
+
+                            case 1:
+                                typepotion = "of healing";
+                                break;
+                            case 2:
+                                typepotion = "of mana regeneration";
+                                break;
+                            case 3:
+                                typepotion = "of mana and health regeneration";
+                                break;
+                        }
+                        if (type == 1 || type == 2) {
+                            Console.WriteLine("A customer approaches you. He wants to buy " + ammount + "potions" + typepotion + "\n1.Sell it\nsay you dont have it");
+                            int sellwyb2 = Int32.Parse(Console.ReadLine());
+                            if (ammount <= igri[type - 1]) {
+                                gold += ammount * 8
+                                igri[type - 1] -= ammount;
+                                Console.WriteLine("You sold " + ammount + " potions " + typepotion + " for " + (ammount * 8) + " gold.");
+                            } else {
+                                Console.WriteLine("You don't have enough potions to sell.");
+                            }
+
+
+                        } else {
+                            Console.WriteLine("A customer approaches you. He wants to buy " + ammount + "potions" + typepotion + "\n1.Sell it\nsay you dont have it");
+                            int sellwyb2 = Int32.Parse(Console.ReadLine());
+                            if (ammount <= igri[type - 3] && ammount <= igri[type - 2]) {
+                                gold += ammount * 16;
+                                igri[type - 3] -= ammount;
+                                igri[type - 2] -= ammount;
+                                Console.WriteLine("You sold " + ammount + " potions " + typepotion + " for " + (ammount * 8) + " gold.");
+                            } else {
+                                Console.WriteLine("You don't have enough potions to sell.");
+                            }
+                        }
+
+
+                        break;
+                    case 2:
+                        displaystats(miasma, blood, ardent, gold, igri);
+                        break;
+                    case 3:
+                        continueLoop = false;
+                        break;
+                    default:
+                        Console.WriteLine("[Wrong command]");
+                        break;
+
+
+
+                        
+                }
+            }
+            return (miasma, blood, ardent, gold, igri);
+        }
+    }
+}
