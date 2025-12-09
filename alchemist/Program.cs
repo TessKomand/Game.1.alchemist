@@ -75,6 +75,9 @@
                     case 4:
                         displaystats(miasma, blood, ardent, gold, igri);
                         break;
+                    case 5:
+                        Console.WriteLine("Save system not implemented yet");
+                    break;
                     case 6:
                         Console.WriteLine("Quitting Game\nThanks for playing!");
                         Environment.Exit(0);
@@ -109,6 +112,8 @@
                             miasma -= 1;
                             igri[1] += 1;
                             Console.WriteLine("Potion made successfully, you have:" + igri[1]);
+                        } else {
+                            Console.WriteLine("Not enough resources to make Health Potion");
                         }
                         break;
                     case 3:
@@ -154,7 +159,7 @@
                         break;
                     case 4:
                         (blood, gift) = talk(blood, gift);
-                        Console.WriteLine("You approach the shop. Green eyed contruct looks at you, her eyes are happy. 'Hello, what can i give you?'\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 blood)\n4.talk\n5.Get back to lab");
+                        Console.WriteLine("You approach the shop. Green eyed contruct looks at you, her eyes are happy. 'Hello, what can i give you?'\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 gold)\n4.talk\n5.Get back to lab");
                         break;
                     case 5:
                         continueLoop = false;
@@ -233,8 +238,9 @@
                                 break;
                         }
                         if (type == 1 || type == 2) {
-                            Console.WriteLine("A customer approaches you. He wants to buy " + ammount + "potions" + typepotion + "\n1.Sell it\nsay you dont have it");
+                            Console.WriteLine("A customer approaches you. He wants to buy " + ammount + " potions" + typepotion + "\n1.Sell it\nsay you dont have it");
                             int sellwyb2 = Int32.Parse(Console.ReadLine());
+                            if (sellwyb2 == 1) {                            
                             if (ammount <= igri[type - 1]) {
                                 gold += ammount * 8;
                                 igri[type - 1] -= ammount;
@@ -242,18 +248,25 @@
                             } else {
                                 Console.WriteLine("You don't have enough potions to sell.");
                             }
-
+                            } else {
+                            Console.WriteLine("You refuse to sell the potions.");
+                            }
+                            break;
 
                         } else {
-                            Console.WriteLine("A customer approaches you. He wants to buy " + ammount + "potions" + typepotion + "\n1.Sell it\nsay you dont have it");
+                            Console.WriteLine("A customer approaches you. He wants to buy " + ammount + " potions" + typepotion + "\n1.Sell it\nsay you dont have it");
                             int sellwyb2 = Int32.Parse(Console.ReadLine());
-                            if (ammount <= igri[type - 3] && ammount <= igri[type - 2]) {
-                                gold += ammount * 16;
-                                igri[type - 3] -= ammount;
-                                igri[type - 2] -= ammount;
-                                Console.WriteLine("You sold " + ammount + " potions " + typepotion + " for " + (ammount * 8) + " gold.");
-                            } else {
-                                Console.WriteLine("You don't have enough potions to sell.");
+                            if (sellwyb2 == 1) {
+                                if (ammount <= igri[type - 3] && ammount <= igri[type - 2]) {
+                                    gold += ammount * 16;
+                                    igri[type - 3] -= ammount;
+                                    igri[type - 2] -= ammount;
+                                    Console.WriteLine("You sold " + ammount + " potions " + typepotion + " for " + (ammount * 16) + " gold.");
+                                } else {
+                                    Console.WriteLine("You don't have enough potions to sell.");
+                                } 
+                            }else { 
+                              Console.WriteLine("You refuse to sell the potions.");
                             }
                         }
 
