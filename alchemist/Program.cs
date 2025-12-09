@@ -1,4 +1,5 @@
 ﻿namespace alchemist {
+    using System.IO;   
     class GameState {
         public int Miasma { get; set; } = 5;
         public int Blood { get; set; } = 5;
@@ -10,7 +11,7 @@
     }
     internal class Program {
         static void Main(string[] args) {
-            
+            GameState g = null;
             Console.WriteLine("Welcome to Alchemist!");
             Console.WriteLine("to start new game press 1\nTo load save press 2 \nto quit game press 3");
 
@@ -22,7 +23,8 @@
                         NewGame();
                         break;
                     case 2:
-                        Console.WriteLine("Load Game feature not implemented yet");
+                        g = LoadGame();
+                        menu(g);
                         break;
                     case 3:
                         Console.WriteLine("Quitting Game\nThanks for playing!");
@@ -55,10 +57,9 @@
             Console.WriteLine("You have:\n" + g.Miasma + " Miasma\n" + g.Blood + " Blood\n" + g.Ardent + " Ardent\n" + g.Gold + " Gold");
             Console.WriteLine("You also have following items:");
             Console.WriteLine(g.Inve[0] + " Health Potions\n" + g.Inve[1] + " Mana Potions\n" + g.Inve[2]);
-            Console.WriteLine("Type 1 to go back");
-            int wybdis = Int32.Parse(Console.ReadLine());
 
-            
+
+
         }
 
         static void menu(GameState g) {
@@ -80,7 +81,7 @@
                         displaystats(g);
                         break;
                     case 5:
-                        Console.WriteLine("Save system not implemented yet");
+                        SaveGame(g);
                         break;
                     case 6:
                         Console.WriteLine("Quitting Game\nThanks for playing!");
@@ -96,7 +97,7 @@
 
         static void alchemy(GameState g) {
             Console.WriteLine("You approach your alchemist table. What potion would you like to make?\n1. Health Potion (2 Blood, 1 Ardent)\n2. Mana Potion (2 Blood, 1 miasma)\n3. Back to Menu");
-            
+
             while (true) {
                 int alchwyb = Int32.Parse(Console.ReadLine());
                 switch (alchwyb) {
@@ -128,12 +129,12 @@
                         break;
                 }
             }
-            
+
         }
 
         static void shop(GameState g) {
             Console.WriteLine("You approach the shop. Green eyed contruct looks at you, her eyes are happy. 'Hello, what can i give you?'\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 gold)\n4.talk\n5.Get back to lab");
-            
+
             while (true) {
                 int shopwyb = Int32.Parse(Console.ReadLine());
                 switch (shopwyb) {
@@ -173,10 +174,10 @@
                         break;
                 }
             }
-            
+
         }
         static void talk(GameState g) {
-            
+
             Random rnd = new Random();
             int daymood = rnd.Next(1, 4);
             Console.WriteLine("Hello Miss, I am Clara, i hope we will get along? I see you are new here. Ask me anything you want.\n1.I am new acolyte, i have shop near you\n2.Do you know what happend to previous acolyte?\n3.How is your day?\n4.Goodbye");
@@ -215,7 +216,7 @@
 
             }
 
-            
+
         }
 
         static void sell(GameState g) {
@@ -289,7 +290,35 @@
                         break;
                 }
             }
-            
+
         }
+
+        static void SaveGame(GameState g) {
+            string data = $"{g.Miasma}\n{g.Blood}\n{g.Ardent}\n{g.Gold}\n{g.Gift}\n{string.Join(";", g.Inve)}";
+            File.WriteAllText("savegame.txt", data);
+            Console.WriteLine("Game saved successfully.");
+        }
+
+        static GameState LoadGame() {
+            if (!File.Exists("savegame.txt")) {
+                Console.WriteLine("No save game found. Starting a new game.");
+                return new GameState();
+            }
+
+            string[] data = File.ReadAllLines("savegame.txt");
+            GameState g = new GameState {
+                Miasma = int.Parse(data[0]),
+                Blood = int.Parse(data[1]),
+                Ardent = int.Parse(data[2]),
+                Gold = int.Parse(data[3]),
+                Gift = int.Parse(data[4]),
+                Inve = Array.ConvertAll(data[5].Split(';'), int.Parse)
+            };
+
+
+            Console.WriteLine("Game loaded successfully.");
+            return g;
+        }
+
     }
 }
