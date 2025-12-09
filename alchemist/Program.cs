@@ -31,7 +31,7 @@
             int miasma, blood, ardent;
             int gift = 0;
             int gold = 0;
-            int[] igri = new int[5]; // 0 health potion, 1 mana potion, 2 stamina potion
+            int[] igri = new int[5]; // 0 health potion, 1 mana potion
             Console.WriteLine("Welcome to your new job acolyte. As your supervisor i hope we will work well togheter.");
             Console.WriteLine("Your job will be making potion, buying supplies and selling potions to our brave paladin.\nLet me show all the fundaments, we have three basic funtaments of alchemy Miasma, Blood and ardent.\nWe also use more comples herbs or alchemist parts. Here are your starting supplies:");
             miasma = 5;
@@ -77,7 +77,7 @@
                         break;
                     case 5:
                         Console.WriteLine("Save system not implemented yet");
-                    break;
+                        break;
                     case 6:
                         Console.WriteLine("Quitting Game\nThanks for playing!");
                         Environment.Exit(0);
@@ -113,7 +113,7 @@
                             igri[1] += 1;
                             Console.WriteLine("Potion made successfully, you have:" + igri[1]);
                         } else {
-                            Console.WriteLine("Not enough resources to make Health Potion");
+                            Console.WriteLine("Not enough resources to make Mana Potion");
                         }
                         break;
                     case 3:
@@ -181,7 +181,7 @@
                 switch (talkwyb) {
                     case 1:
                         if (gift == 0) {
-                            Console.WriteLine("Oh, then i hope you will have a great time at here. It got bored seeing all the figting and sacrate units.\nHere, lifftle gift from me");
+                            Console.WriteLine("Oh, then i hope you will have a great time at here. It got bored seeing all the figting and sacrate units.\nHere, little gift from me");
                             blood += 5;
                             gift++;
                         } else {
@@ -189,7 +189,7 @@
                         }
                         break;
                     case 2:
-                        Console.WriteLine("I heard she had an accident. Maybe she was moved. But alsop she didnt get alonmg well with one guy. ");
+                        Console.WriteLine("I heard she had an accident. Maybe she was moved. But also she didnt get alonmg well with one guy. ");
                         break;
                     case 3:
                         if (daymood == 1) {
@@ -238,7 +238,7 @@
                                 break;
                         }
                         if (type == 1 || type == 2) {
-                            Console.WriteLine("A customer approaches you. He wants to buy " + ammount + " potions" + typepotion + "\n1.Sell it\nsay you dont have it");
+                            Console.WriteLine("A customer approaches you. He wants to buy " + ammount + " potions" + typepotion + "\n1.Sell it\n2.say you dont have it");
                             int sellwyb2 = Int32.Parse(Console.ReadLine());
                             if (sellwyb2 == 1) {                            
                             if (ammount <= igri[type - 1]) {
@@ -248,13 +248,15 @@
                             } else {
                                 Console.WriteLine("You don't have enough potions to sell.");
                             }
-                            } else {
+                            } else if (sellwyb2 == 2) {
                             Console.WriteLine("You refuse to sell the potions.");
+                            } else {
+                                Console.WriteLine("[Wrong command]");
                             }
                             break;
 
                         } else {
-                            Console.WriteLine("A customer approaches you. He wants to buy " + ammount + " potions" + typepotion + "\n1.Sell it\nsay you dont have it");
+                            Console.WriteLine("A customer approaches you. He wants to buy " + ammount + " potions " + typepotion + "\n1.Sell it\nsay you dont have it");
                             int sellwyb2 = Int32.Parse(Console.ReadLine());
                             if (sellwyb2 == 1) {
                                 if (ammount <= igri[type - 3] && ammount <= igri[type - 2]) {
@@ -265,8 +267,10 @@
                                 } else {
                                     Console.WriteLine("You don't have enough potions to sell.");
                                 } 
-                            }else { 
+                            }else if (sellwyb2 == 2) { 
                               Console.WriteLine("You refuse to sell the potions.");
+                            } else {
+                                Console.WriteLine("[Wrong command]");
                             }
                         }
 
