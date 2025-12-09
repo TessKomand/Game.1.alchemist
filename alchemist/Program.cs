@@ -236,7 +236,7 @@
                             Console.WriteLine("A customer approaches you. He wants to buy " + ammount + "potions" + typepotion + "\n1.Sell it\nsay you dont have it");
                             int sellwyb2 = Int32.Parse(Console.ReadLine());
                             if (ammount <= igri[type - 1]) {
-                                gold += ammount * 8
+                                gold += ammount * 8;
                                 igri[type - 1] -= ammount;
                                 Console.WriteLine("You sold " + ammount + " potions " + typepotion + " for " + (ammount * 8) + " gold.");
                             } else {
