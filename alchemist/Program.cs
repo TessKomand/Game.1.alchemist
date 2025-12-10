@@ -1,5 +1,5 @@
 ﻿namespace alchemist {
-    using System.IO;   
+    using System.IO;
     class GameState {
         public int Miasma { get; set; } = 5;
         public int Blood { get; set; } = 5;
@@ -8,7 +8,11 @@
         public int Gift { get; set; } = 0;
         public int[] Inve { get; set; } = new int[5];
 
+        public string[] Potionname = {"Health Potion", "Mana Potion"};
     }
+
+
+
     internal class Program {
         static void Main(string[] args) {
             GameState g = null;
@@ -86,6 +90,15 @@
                     case 6:
                         Console.WriteLine("Quitting Game\nThanks for playing!");
                         Environment.Exit(0);
+                        break;
+                    case 88:
+                        g.Miasma += 50;
+                        g.Ardent += 50;
+                        g.Blood += 50;
+                        g.Gold += 50;
+                        g.Inve[0] += 20;
+                        g.Inve[1] += 20;
+                        Console.WriteLine("Cheat activated");
                         break;
                     default:
                         Console.WriteLine("[Wrong command]");
@@ -222,103 +235,101 @@
         static void sell(GameState g) {
             Console.WriteLine("You enter front of your shop, symbol of 3ight goddess is near your table. few of customers get in. Mostly paladins and warriors.\n1.help customer\n2.check your stash\n3.go back into the back of a store.");
             bool continueLoop = true;
-            string typepotion = "none";
+
             Random rnd = new Random();
             while (continueLoop == true) {
                 int sellwyb = Int32.Parse(Console.ReadLine());
                 switch (sellwyb) {
                     case 1:
-                        int type = rnd.Next(1, 4);
-                        int ammount = rnd.Next(1, 4);
-                        switch (type) {
-
-                            case 1:
-                                typepotion = "of healing";
-                                break;
-                            case 2:
-                                typepotion = "of mana regeneration";
-                                break;
-                            case 3:
-                                typepotion = "of mana and health regeneration";
-                                break;
-                        }
-                        if (type == 1 || type == 2) {
-                            Console.WriteLine("A customer approaches you. He wants to buy " + ammount + " potions" + typepotion + "\n1.Sell it\n2.say you dont have it");
+                        int type = rnd.Next(1, 3);
+                        int ammount = rnd.Next(1, 3);
+                        int buymany = 6;
+                        
+                        Stack<int> buylist = new Stack<int>();
+                        bool sellingloop = true;
+                        if (buymany <= 5) {
+                            while (sellingloop == true) {
+                                Console.WriteLine("A customer approaches you. He wants to buy " + ammount + " potions " + g.Potionname[type - 1] + "\n1.Sell it\n2.say you dont have it");
+                                int sellwyb2 = Int32.Parse(Console.ReadLine());
+                                if (sellwyb2 == 1) {
+                                    if (ammount <= g.Inve[type - 1]) {
+                                        g.Gold += ammount * 8;
+                                        g.Inve[type - 1] -= ammount;
+                                        Console.WriteLine("You sold " + ammount + " potions " + g.Potionname[type - 1] + " for " + (ammount * 8) + " gold.");
+                                    } else {
+                                        Console.WriteLine("You don't have enough potions to sell.");
+                                    }
+                                } else if (sellwyb2 == 2) {
+                                    Console.WriteLine("You refuse to sell the potions.");
+                                    sell(g);
+                                } else {
+                                    Console.WriteLine("[Wrong command]");
+                                }
+                            }
+                        } else {
+                            while (sellingloop == true && buymany == 6)
+                                buymany = rnd.Next(1, 6);
+                            ammount = rnd.Next(1, 3);
+                            type = rnd.Next(1, 3);
+                            
+                            Console.WriteLine("And also he wants to buy " + ammount + " potions " + g.Potionname[type - 1] + "\n1.Sell it\n2.say you dont have it");
                             int sellwyb2 = Int32.Parse(Console.ReadLine());
                             if (sellwyb2 == 1) {
                                 if (ammount <= g.Inve[type - 1]) {
                                     g.Gold += ammount * 8;
                                     g.Inve[type - 1] -= ammount;
-                                    Console.WriteLine("You sold " + ammount + " potions " + typepotion + " for " + (ammount * 8) + " gold.");
-                                } else {
+                                    Console.WriteLine("You sold " + ammount + " potions " + g.Potionname[type - 1] + " for " + (ammount * 8) + " gold.");
+                                } else if (sellwyb2 == 2) {
                                     Console.WriteLine("You don't have enough potions to sell.");
+                                    sell(g);
+                                } else {
+                                    Console.WriteLine("[Wrong command]");
                                 }
-                            } else if (sellwyb2 == 2) {
-                                Console.WriteLine("You refuse to sell the potions.");
-                            } else {
-                                Console.WriteLine("[Wrong command]");
-                            }
-                            break;
 
-                        } else {
-                            Console.WriteLine("A customer approaches you. He wants to buy " + ammount + " potions " + typepotion + "\n1.Sell it\nsay you dont have it");
-                            int sellwyb2 = Int32.Parse(Console.ReadLine());
-                            if (sellwyb2 == 1) {
-                                if (ammount <= g.Inve[type - 3] && ammount <= g.Inve[type - 2]) {
-                                    g.Gold += ammount * 16;
-                                    g.Inve[type - 3] -= ammount;
-                                    g.Inve[type - 2] -= ammount;
-                                    Console.WriteLine("You sold " + ammount + " potions " + typepotion + " for " + (ammount * 16) + " gold.");
-                                } else {
-                                    Console.WriteLine("You don't have enough potions to sell.");
-                                }
-                            } else if (sellwyb2 == 2) {
-                                Console.WriteLine("You refuse to sell the potions.");
-                            } else {
-                                Console.WriteLine("[Wrong command]");
                             }
                         }
+                        sell(g);
                         break;
                     case 2:
-                        displaystats(g);
-                        break;
-                    case 3:
-                        continueLoop = false;
-                        break;
-                    default:
-                        Console.WriteLine("[Wrong command]");
-                        break;
+                                displaystats(g);
+                                break;
+                            case 3:
+                                continueLoop = false;
+                                break;
+                            default:
+                                Console.WriteLine("[Wrong command]");
+                                break;
+                            }
+                        }
+
                 }
+
+                static void SaveGame(GameState g) {
+                    string data = $"{g.Miasma}\n{g.Blood}\n{g.Ardent}\n{g.Gold}\n{g.Gift}\n{string.Join(";", g.Inve)}";
+                    File.WriteAllText("savegame.txt", data);
+                    Console.WriteLine("Game saved successfully.");
+                }
+
+                static GameState LoadGame() {
+                    if (!File.Exists("savegame.txt")) {
+                        Console.WriteLine("No save game found. Starting a new game.");
+                        return new GameState();
+                    }
+
+                    string[] data = File.ReadAllLines("savegame.txt");
+                    GameState g = new GameState {
+                        Miasma = int.Parse(data[0]),
+                        Blood = int.Parse(data[1]),
+                        Ardent = int.Parse(data[2]),
+                        Gold = int.Parse(data[3]),
+                        Gift = int.Parse(data[4]),
+                        Inve = Array.ConvertAll(data[5].Split(';'), int.Parse)
+                    };
+
+
+                    Console.WriteLine("Game loaded successfully.");
+                    return g;
+                }
+
             }
-
-        }
-
-        static void SaveGame(GameState g) {
-            string data = $"{g.Miasma}\n{g.Blood}\n{g.Ardent}\n{g.Gold}\n{g.Gift}\n{string.Join(";", g.Inve)}";
-            File.WriteAllText("savegame.txt", data);
-            Console.WriteLine("Game saved successfully.");
-        }
-
-        static GameState LoadGame() {
-            if (!File.Exists("savegame.txt")) {
-                Console.WriteLine("No save game found. Starting a new game.");
-                return new GameState();
-            }
-
-            string[] data = File.ReadAllLines("savegame.txt");
-            GameState g = new GameState {
-                Miasma = int.Parse(data[0]),
-                Blood = int.Parse(data[1]),
-                Ardent = int.Parse(data[2]),
-                Gold = int.Parse(data[3]),
-                Gift = int.Parse(data[4]),
-                Inve = Array.ConvertAll(data[5].Split(';'), int.Parse)
-            };
-
-
-            Console.WriteLine("Game loaded successfully.");
-            return g;
-        }
-
-    }
-}
+        } 
