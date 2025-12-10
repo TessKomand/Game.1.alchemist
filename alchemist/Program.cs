@@ -239,7 +239,8 @@
         static void talk1(GameState g) {
 
             if (g.Claramet == false) {
-                Console.WriteLine("You walk into the shop near your place. Your supervisor told you that your shop has a contract with this establishment. As you look around, you see the owner. She is a young construct with green eyes and long white hair with green tips. She wears a simple robe adorned with the symbol of the Third Mother.\n'Hello, miss, I am Clara. How can I help you?");
+                Console.WriteLine("You walk into the shop near your place. Your supervisor told you that your shop has a contract with this establishment. As you look around, you see the owner. She is a young construct with green eyes and long white hair with green tips. She wears a simple robe adorned with the symbol of the Third Mother.");
+                Console.WriteLine("'Hello, miss, I am Clara. How can I help you?'");
                 g.Claramet = true;
             } else { Console.WriteLine("Hello Sister, want to talk about something?"); }
                    
@@ -255,7 +256,7 @@
                 switch (talkwyb) {
                     case 1:
                         if (g.Gift == 0) {
-                            Console.WriteLine("Oh, then i hope you will have a great time at here. It got bored seeing all the figting and sacrate units.\nHere, little gift from me");
+                            Console.WriteLine("Oh, then i hope you will have a great time here. It got bored seeing all the fighting and sacred units.\nHere, little gift from me");
                             g.Blood += 5;
                             g.Gift++;
                         } else {
@@ -269,7 +270,7 @@
                         if (g.Daymood == 1) {
                             Console.WriteLine("Oh, today is great day! I sold a lot of alchemy elements");
                         } else if (g.Daymood == 2) {
-                            Console.WriteLine("Oh, today is normal day. Nothing special, buiznsess as usual");
+                            Console.WriteLine("Oh, today is normal day. Nothing special, business as usual");
                         } else {
                             Console.WriteLine("Oh, today is bad day. I cant sell anything... maybe you can buy something");
                         }
@@ -291,33 +292,31 @@
 
             Console.WriteLine("Clara: Hello again, i need health potion, can you give me one? Yes/No");
             string Clarachoise = Console.ReadLine().ToLower();
-            
-            while(Clarachoise != "yes" && Clarachoise != "no") {
+
+            while (Clarachoise != "yes" && Clarachoise != "no") {
                 Console.WriteLine("Please answer 'Yes' or 'No'.");
                 Clarachoise = Console.ReadLine().ToLower();
-                if (Clarachoise == "yes") {
-                    if (g.Inve[0] >= 1) {
-                        Console.WriteLine("You give Clara health potion from your bag. You help her drink it");
-                        Console.WriteLine("Goddesses bless you, i got attacked. Please, be cerful. I will make up to you");
-                        g.Clarahelpedgift = true;
-                        Console.WriteLine("You helped her get back home");
-                        g.Inve[0] -= 1;
-                    } else {
-                        Console.WriteLine("You look for potion to give her. unfortunately you dont have one, but you helped her get to home");
-                        Console.WriteLine("Goddesses bless you, i got attacked. Please, be cerful.");
-                    }
-
-                } else if (Clarachoise == "no") {
-                    Console.WriteLine("B-but My miasma pumps will stop working... I cant, please");
-                    Console.WriteLine("You refused to help Clara. She tries to go back home leaving black and white trail on the ground. You feel judged by statue of your goddess");
-                    g.Gold -= 8;
-                    g.Claramad = true;
-                }
             }
+            if (Clarachoise == "yes") {
+                if (g.Inve[0] >= 1) {
+                    Console.WriteLine("You give Clara health potion from your bag. You help her drink it");
+                    Console.WriteLine("Goddesses bless you, i was attacked. Please, be cerful. I will make up to you");
+                    g.Clarahelpedgift = true;
+                    Console.WriteLine("You helped her get back home");
+                    g.Inve[0] -= 1;
+                } else {
+                    Console.WriteLine("You look for potion to give her. unfortunately you dont have one, but you helped her get home");
+                    Console.WriteLine("Goddesses bless you, i was attacked. Please, be cerful.");
+                }
 
+            } else if (Clarachoise == "no") {
+                Console.WriteLine("B-but my Miasma pumps will stop working... I cant, please");
+                Console.WriteLine("You refused to help Clara. She tries to go back home leaving black and white trail on the ground.");
+                Console.WriteLine("She whispers, calling you 'Soulless'");
 
+                g.Claramad = true;
+                }
             
-
                 g.Clarahelped = true;
         }
 
@@ -426,7 +425,7 @@
         
 
             static void SaveGame(GameState g) {
-                string data = $"{g.Miasma}\n{g.Blood}\n{g.Ardent}\n{g.Gold}\n{g.Gift}\n{string.Join(";", g.Inve)}";
+                string data = $"{g.Miasma}\n{g.Blood}\n{g.Ardent}\n{g.Gold}\n{g.Gift}\n{g.Daymood}\n{g.Day}\n{g.Clarahelped}\n{g.Clarahelpedgift}\n{g.Claramet}\n{g.Claramad}\n{string.Join(";", g.Inve)}";
                 File.WriteAllText("savegame.txt", data);
                 Console.WriteLine("Game saved successfully.");
             }
@@ -444,6 +443,12 @@
                     Ardent = int.Parse(data[2]),
                     Gold = int.Parse(data[3]),
                     Gift = int.Parse(data[4]),
+                    Daymood = int.Parse(data[5]),
+                    Day = int.Parse(data[6]),
+                    Clarahelped = bool.Parse(data[7]),
+                    Clarahelpedgift = bool.Parse(data[8]),
+                    Claramet = bool.Parse(data[9]),
+                    Claramad = bool.Parse(data[10]),
                     Inve = Array.ConvertAll(data[5].Split(';'), int.Parse)
                 };
 
