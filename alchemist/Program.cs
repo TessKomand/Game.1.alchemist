@@ -8,7 +8,7 @@
         public int Gift { get; set; } = 0;
         public int[] Inve { get; set; } = new int[5];
 
-        public string[] Potionname = {"Health Potion", "Mana Potion"};
+        public string[] Potionname = {"Health Potion", "Mana Potion", "Strength potion", "Resurrection Potion" };
     }
 
 
@@ -60,7 +60,9 @@
         static void displaystats(GameState g) {
             Console.WriteLine("You have:\n" + g.Miasma + " Miasma\n" + g.Blood + " Blood\n" + g.Ardent + " Ardent\n" + g.Gold + " Gold");
             Console.WriteLine("You also have following items:");
-            Console.WriteLine(g.Inve[0] + " Health Potions\n" + g.Inve[1] + " Mana Potions\n" + g.Inve[2]);
+            for (int i = 0; i < g.Potionname.Length; i++) {
+                Console.WriteLine($"{g.Inve[i]} {g.Potionname[i]}");
+            }
 
 
 
@@ -98,6 +100,8 @@
                         g.Gold += 50;
                         g.Inve[0] += 20;
                         g.Inve[1] += 20;
+                        g.Inve[2] += 20;
+                        g.Inve[3] += 20;
                         Console.WriteLine("Cheat activated");
                         break;
                     default:
@@ -135,8 +139,7 @@
                         }
                         break;
                     case 3:
-                        menu(g);
-                        break;
+                        return;
                     default:
                         Console.WriteLine("[Wrong command]");
                         break;
@@ -146,9 +149,10 @@
         }
 
         static void shop(GameState g) {
-            Console.WriteLine("You approach the shop. Green eyed contruct looks at you, her eyes are happy. 'Hello, what can i give you?'\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 gold)\n4.talk\n5.Get back to lab");
+            string talk1a = "What would you like to do?\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 gold)\n4.talk\n5.Get back to lab";
 
             while (true) {
+                Console.WriteLine("You approach the shop. Green eyed contruct looks at you, her eyes are happy. 'Hello, what can i give you?'\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 gold)\n4.talk\n5.Get back to lab");
                 int shopwyb = Int32.Parse(Console.ReadLine());
                 switch (shopwyb) {
                     case 1:
@@ -158,6 +162,7 @@
                         } else {
                             Console.WriteLine("Not enough gold");
                         }
+                        Console.WriteLine(talk1a);
                         break;
                     case 2:
                         if (g.Gold >= 2) {
@@ -166,6 +171,7 @@
                         } else {
                             Console.WriteLine("Not enough gold");
                         }
+                        Console.WriteLine(talk1a);
                         break;
                     case 3:
                         if (g.Gold >= 1) {
@@ -174,16 +180,17 @@
                         } else {
                             Console.WriteLine("Not enough gold");
                         }
+                        Console.WriteLine(talk1a);
                         break;
                     case 4:
                         talk(g);
-                        Console.WriteLine("You approach the shop. Green eyed contruct looks at you, her eyes are happy. 'Hello, what can i give you?'\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 gold)\n4.talk\n5.Get back to lab");
+                        Console.WriteLine(talk1a);
                         break;
                     case 5:
-                        menu(g);
-                        break;
+                        return;
                     default:
                         Console.WriteLine("[Wrong command]");
+                        Console.WriteLine(talk1a);
                         break;
                 }
             }
@@ -219,8 +226,8 @@
                         }
                         break;
                     case 4:
-                        shop(g);
-                        break;
+                        return;
+                        
                     default:
                         Console.WriteLine("[Wrong command]");
                         break;
@@ -233,62 +240,75 @@
         }
 
         static void sell(GameState g) {
-            Console.WriteLine("You enter front of your shop, symbol of 3ight goddess is near your table. few of customers get in. Mostly paladins and warriors.\n1.help customer\n2.check your stash\n3.go back into the back of a store.");
+            Console.WriteLine("You enter front of your shop, symbol of eight goddess is near your table. few of customers get in. Mostly paladins and warriors.\n1.help customer\n2.check your stash\n3.go back into the back of a store.");
             bool continueLoop = true;
-
+            Stack<int> buylist = new Stack<int>();
             Random rnd = new Random();
             while (continueLoop == true) {
                 int sellwyb = Int32.Parse(Console.ReadLine());
                 switch (sellwyb) {
                     case 1:
-                        int type = rnd.Next(1, 3);
-                        int ammount = rnd.Next(1, 3);
-                        int buymany = 6;
-                        
-                        Stack<int> buylist = new Stack<int>();
+                        int type;
+                        int ammount;
+                        int buymany = rnd.Next(1, 7);
                         bool sellingloop = true;
                         if (buymany <= 5) {
                             while (sellingloop == true) {
+                                 type = rnd.Next(1, 5);
+                                 ammount = rnd.Next(1, 3);
+                                 buymany = rnd.Next(1, 7);
                                 Console.WriteLine("A customer approaches you. He wants to buy " + ammount + " potions " + g.Potionname[type - 1] + "\n1.Sell it\n2.say you dont have it");
                                 int sellwyb2 = Int32.Parse(Console.ReadLine());
                                 if (sellwyb2 == 1) {
                                     if (ammount <= g.Inve[type - 1]) {
                                         g.Gold += ammount * 8;
                                         g.Inve[type - 1] -= ammount;
-                                        Console.WriteLine("You sold " + ammount + " potions " + g.Potionname[type - 1] + " for " + (ammount * 8) + " gold.");
+                                        Console.WriteLine("You sold " + ammount + " potions " + g.Potionname[type - 1] + " for " + (ammount * 8) + " gold. You now have " + g.Gold + " gold.");
+                                        sellingloop = false;
                                     } else {
                                         Console.WriteLine("You don't have enough potions to sell.");
+                                        sellingloop = false;
                                     }
                                 } else if (sellwyb2 == 2) {
                                     Console.WriteLine("You refuse to sell the potions.");
-                                    sell(g);
+                                    sellingloop = false;
                                 } else {
                                     Console.WriteLine("[Wrong command]");
                                 }
                             }
                         } else {
-                            while (sellingloop == true && buymany == 6)
-                                buymany = rnd.Next(1, 6);
-                            ammount = rnd.Next(1, 3);
-                            type = rnd.Next(1, 3);
-                            
-                            Console.WriteLine("And also he wants to buy " + ammount + " potions " + g.Potionname[type - 1] + "\n1.Sell it\n2.say you dont have it");
-                            int sellwyb2 = Int32.Parse(Console.ReadLine());
-                            if (sellwyb2 == 1) {
-                                if (ammount <= g.Inve[type - 1]) {
-                                    g.Gold += ammount * 8;
-                                    g.Inve[type - 1] -= ammount;
-                                    Console.WriteLine("You sold " + ammount + " potions " + g.Potionname[type - 1] + " for " + (ammount * 8) + " gold.");
-                                } else if (sellwyb2 == 2) {
-                                    Console.WriteLine("You don't have enough potions to sell.");
-                                    sell(g);
-                                } else {
-                                    Console.WriteLine("[Wrong command]");
+                            int tries = 0;
+                            while (sellingloop == true) {
+                                for (int i = 0; i < buymany; i++) {
+                                    type = rnd.Next(1, 5);
+                                    ammount = rnd.Next(1, 3);
+                                    buymany = rnd.Next(1, 7);
+                                    tries++;
+                                    while (buylist.Contains(type - 1)) { type = rnd.Next(1, 5); }
+                                    buylist.Push(type - 1);
+                                    Console.WriteLine("And also he wants to buy " + ammount + " potions " + g.Potionname[type - 1] + "\n1.Sell it\n2.say you dont have it");
+                                    int sellwyb2 = Int32.Parse(Console.ReadLine());
+                                    if (sellwyb2 == 1) {
+                                        if (ammount <= g.Inve[type - 1]) {
+                                            g.Gold += ammount * 8;
+                                            g.Inve[type - 1] -= ammount;
+                                            Console.WriteLine("You sold " + ammount + " potions " + g.Potionname[type - 1] + " for " + (ammount * 8) + " gold. You now have " + g.Gold + " gold.");
+                                        } else {
+                                            Console.WriteLine("You don't have enough potions to sell.");
+                                            sellingloop = false;
+                                            buylist.Clear();
+                                        }
+                                    } else if (sellwyb2 == 2) {
+                                        Console.WriteLine("You refuse to sell the potions.");
+                                        sellingloop = false;
+                                        buylist.Clear();
+                                    } else {
+                                        Console.WriteLine("[Wrong command]");
+                                    }
                                 }
-
+                                buylist.Clear();
                             }
                         }
-                        sell(g);
                         break;
                     case 2:
                                 displaystats(g);
