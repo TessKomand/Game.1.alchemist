@@ -6,9 +6,12 @@
         public int Ardent { get; set; } = 5;
         public int Gold { get; set; } = 0;
         public int Gift { get; set; } = 0;
+        public int Daymood { get; set; } = 2;
+        public int Day { get; set; } = 0;
         public int[] Inve { get; set; } = new int[5];
-
-        public string[] Potionname = {"Health Potion", "Mana Potion", "Strength potion", "Resurrection Potion" };
+        public int[] Potionval = {8,8,8,35};
+        public string[] Potionname = {"Health Potion", "Mana Potion", "Explosive Potion", "Resurrection Potion" };
+        public string[] Potionrec = { "2 Blood and 1 Ardent", "2 Blood and 1 Miasma", "1 ardent and 1 Miasma", "4 of all" };
     }
 
 
@@ -113,33 +116,64 @@
 
 
         static void alchemy(GameState g) {
-            Console.WriteLine("You approach your alchemist table. What potion would you like to make?\n1. Health Potion (2 Blood, 1 Ardent)\n2. Mana Potion (2 Blood, 1 miasma)\n3. Back to Menu");
+            displaystats(g);
+            Console.WriteLine("You approach your alchemist table. What potion would you like to make?");
+            Console.WriteLine("1. View Recipes\n2. Make Health Potion\n3. Make Mana Potion\n4. Make Explosive Potion\n5. Go back to station");
+            for (int i = 1; i < g.Potionname.Length; i++) {
+                Console.WriteLine($"{i}. {g.Potionname[i-1]}\n");
+            }
 
             while (true) {
                 int alchwyb = Int32.Parse(Console.ReadLine());
                 switch (alchwyb) {
                     case 1:
+                        for (int i = 0; i < g.Potionname.Length; i++) {
+                            Console.WriteLine($"{g.Inve[i]} {g.Potionrec[i]}");
+                        }
+                    break;
+                    case 2:
                         if (g.Blood >= 2 && g.Ardent >= 1) {
                             g.Blood -= 2;
                             g.Ardent -= 1;
                             g.Inve[0] += 1;
                             Console.WriteLine("Potion made successfully, you have:" + g.Inve[0]);
                         } else {
-                            Console.WriteLine("Not enough resources to make Health Potion");
+                            Console.WriteLine("Not enough resources");
                         }
                         break;
-                    case 2:
+                    case 3:
                         if (g.Blood >= 2 && g.Miasma >= 1) {
                             g.Blood -= 2;
                             g.Miasma -= 1;
                             g.Inve[1] += 1;
                             Console.WriteLine("Potion made successfully, you have:" + g.Inve[1]);
                         } else {
-                            Console.WriteLine("Not enough resources to make Mana Potion");
+                            Console.WriteLine("Not enough resources");
                         }
                         break;
-                    case 3:
-                        return;
+                    case 4:
+                        if (g.Ardent >= 1 && g.Miasma >= 1) {
+                            g.Ardent -= 1;
+                            g.Miasma -= 1;
+                            g.Inve[2] += 1;
+                            Console.WriteLine("Potion made successfully, you have:" + g.Inve[2]);
+                        } else {
+                            Console.WriteLine("Not enough resources");
+                        }
+                        break;
+                    case 5:
+                        if (g.Blood >= 4 && g.Miasma >= 4 && g.Ardent >= 4) {
+                            g.Ardent -= 4;
+                            g.Miasma -= 4;
+                            g.Blood -= 4;
+                            g.Inve[3] += 1;
+                            Console.WriteLine("Potion made successfully, you have:" + g.Inve[3]);
+                        } else {
+                            Console.WriteLine("Not enough resources");
+                        }
+                        break;
+                    case 6:
+                    return;
                     default:
                         Console.WriteLine("[Wrong command]");
                         break;
@@ -149,10 +183,10 @@
         }
 
         static void shop(GameState g) {
-            string talk1a = "What would you like to do?\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 gold)\n4.talk\n5.Get back to lab";
+            Console.WriteLine("You approach the shop. Green eyed contruct looks at you, her eyes are happy. 'Hello Sister'");
 
             while (true) {
-                Console.WriteLine("You approach the shop. Green eyed contruct looks at you, her eyes are happy. 'Hello, what can i give you?'\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 gold)\n4.talk\n5.Get back to lab");
+                Console.WriteLine("'what can i give you?'\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 gold)\n4.talk\n5.Get back to lab");
                 int shopwyb = Int32.Parse(Console.ReadLine());
                 switch (shopwyb) {
                     case 1:
@@ -161,8 +195,7 @@
                             g.Miasma += 1;
                         } else {
                             Console.WriteLine("Not enough gold");
-                        }
-                        Console.WriteLine(talk1a);
+                        }                        
                         break;
                     case 2:
                         if (g.Gold >= 2) {
@@ -170,8 +203,7 @@
                             g.Ardent += 1;
                         } else {
                             Console.WriteLine("Not enough gold");
-                        }
-                        Console.WriteLine(talk1a);
+                        }                       
                         break;
                     case 3:
                         if (g.Gold >= 1) {
@@ -179,18 +211,16 @@
                             g.Blood += 1;
                         } else {
                             Console.WriteLine("Not enough gold");
-                        }
-                        Console.WriteLine(talk1a);
+                        }                      
                         break;
                     case 4:
                         talk(g);
-                        Console.WriteLine(talk1a);
+                       
                         break;
                     case 5:
                         return;
                     default:
-                        Console.WriteLine("[Wrong command]");
-                        Console.WriteLine(talk1a);
+                        Console.WriteLine("[Wrong command]");      
                         break;
                 }
             }
@@ -198,10 +228,10 @@
         }
         static void talk(GameState g) {
 
-            Random rnd = new Random();
-            int daymood = rnd.Next(1, 4);
-            Console.WriteLine("Hello Miss, I am Clara, i hope we will get along? I see you are new here. Ask me anything you want.\n1.I am new acolyte, i have shop near you\n2.Do you know what happend to previous acolyte?\n3.How is your day?\n4.Goodbye");
+
+            Console.WriteLine("Hello Miss, I am Clara, i hope we will get along? I see you are new here. Ask me anything you want.");
             while (true) {
+                Console.WriteLine("\n1.I am new acolyte, i have shop near you\n2.Do you know what happend to previous acolyte?\n3.How is your day?\n4.Goodbye");
                 int talkwyb = Int32.Parse(Console.ReadLine());
                 switch (talkwyb) {
                     case 1:
@@ -227,7 +257,7 @@
                         break;
                     case 4:
                         return;
-                        
+
                     default:
                         Console.WriteLine("[Wrong command]");
                         break;
@@ -235,6 +265,16 @@
 
 
             }
+
+
+        }
+
+        static void sleep(GameState g) {
+            Random rnd = new Random();
+            g.Daymood = rnd.Next(1, 4);
+            g.Day += 1;
+
+            Console.WriteLine("You go to sleep, taking off your mask you lay into your resting coffin. Day " + (g.Day + 1) + " begins.");
 
 
         }
@@ -261,9 +301,10 @@
                                 int sellwyb2 = Int32.Parse(Console.ReadLine());
                                 if (sellwyb2 == 1) {
                                     if (ammount <= g.Inve[type - 1]) {
-                                        g.Gold += ammount * 8;
+                                        g.Gold += ammount * g.Potionval[type - 1];
                                         g.Inve[type - 1] -= ammount;
-                                        Console.WriteLine("You sold " + ammount + " potions " + g.Potionname[type - 1] + " for " + (ammount * 8) + " gold. You now have " + g.Gold + " gold.");
+                                        int val = g.Potionval[type - 1];
+                                        Console.WriteLine("You sold " + ammount + " potions " + g.Potionname[type - 1] + " for " + (ammount * val) + " gold. You now have " + g.Gold + " gold.");
                                         sellingloop = false;
                                     } else {
                                         Console.WriteLine("You don't have enough potions to sell.");
@@ -290,8 +331,9 @@
                                     int sellwyb2 = Int32.Parse(Console.ReadLine());
                                     if (sellwyb2 == 1) {
                                         if (ammount <= g.Inve[type - 1]) {
-                                            g.Gold += ammount * 8;
+                                            g.Gold += ammount * g.Potionval[type - 1];
                                             g.Inve[type - 1] -= ammount;
+                                            int val = g.Potionval[type - 1];
                                             Console.WriteLine("You sold " + ammount + " potions " + g.Potionname[type - 1] + " for " + (ammount * 8) + " gold. You now have " + g.Gold + " gold.");
                                         } else {
                                             Console.WriteLine("You don't have enough potions to sell.");
