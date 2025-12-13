@@ -345,37 +345,9 @@
 
             Console.WriteLine("Today is " + GameInfo.daytype[g.Daynumber] + ".");
             g.Daynumber++;
-            if (g.Daynumber == 6) {
-                Console.WriteLine("It's weekend! Your shop will be closed. Tommorow you will have to pay taxes. It will be 6 gold");
-            }
-
-            if (g.Taxduepaid == false && g.Taxdue == true) {
-                Console.WriteLine("You have to pay your taxes from last week and this one. It will be 12 gold.");
-
-                if (g.Gold >= 12) {
-                    Console.WriteLine("You paid your due taxes, next time thye will not be mercyfull");
-                    g.Gold -= 12;
-                    g.Taxduepaid = true;
-                } else {
-                    LoseGame(g);
-                }
-            }
-
-            if (g.Daynumber == 7) {
-                Console.WriteLine("Tax day, you will have to pay for your shop and for lab blessing. It will be 6 gold");
-                if (g.Gold >= 6) {
-                    g.Gold -= 6;
-                    Console.WriteLine("You paid your taxes, you have " + g.Gold + " gold left.");
-                } else if (g.Gold < 6 && g.Taxduepaid == false) {
-                    Console.WriteLine("You don't have enough gold to pay your taxes. But logisctic unites took pity over you this time, you will ");
-                    g.Taxdue = true;
-                } else {
-                    LoseGame(g);
-                }
-                if (g.Daynumber > 6) { g.Daynumber = 0; }
-
-
-            }
+            Taxes(g);
+            if (g.Daynumber > 6) { g.Daynumber = 0; }
+            
             return;
         }
 
@@ -501,6 +473,38 @@
             return g;
         }
 
+        static void Taxes(GameState g) {
+
+            if (g.Daynumber == 6) {
+                Console.WriteLine("It's weekend! Your shop will be closed. Tommorow you will have to pay taxes. It will be 6 gold");
+            }
+
+            if (g.Taxduepaid == false && g.Taxdue == true) {
+                Console.WriteLine("You have to pay your taxes from last week and this one. It will be 12 gold.");
+
+                if (g.Gold >= 12) {
+                    Console.WriteLine("You paid your due taxes, next time thye will not be mercyfull");
+                    g.Gold -= 12;
+                    g.Taxduepaid = true;
+                } else {
+                    LoseGame(g);
+                }
+            }
+
+            if (g.Daynumber == 7) {
+                Console.WriteLine("Tax day, you will have to pay for your shop and for lab blessing. It will be 6 gold");
+                if (g.Gold >= 6) {
+                    g.Gold -= 6;
+                    Console.WriteLine("You paid your taxes, you have " + g.Gold + " gold left.");
+                } else if (g.Gold < 6 && g.Taxduepaid == false) {
+                    Console.WriteLine("You don't have enough gold to pay your taxes. But logisctic unites took pity over you this time, you will ");
+                    g.Taxdue = true;
+                } else {
+                    LoseGame(g);
+                }
+            }
+            return;
+        }
 
         static void LoseGame(GameState g) {
             switch (g.Reasonlost) {  
