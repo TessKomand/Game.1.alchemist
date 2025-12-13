@@ -19,6 +19,7 @@
         public bool Taxdue { get; set; } = false;
         public bool Taxduepaid { get; set; } = false;
         public int Reasonlost { get; set; } = 0;
+        public bool Secretrec { get; set; } = false;
     }
 
     class GameInfo {
@@ -29,6 +30,26 @@
         public static readonly string[] daytype = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
     }
 
+    enum Potion {
+        ListRecipes = 0,
+        Health = 1,
+        Mana = 2,
+        Explosive = 3,
+        Resurrection = 4,
+        RETURN = 9
+    }
+    enum Menuoptions {
+        MakePotion = 1,
+        BuySupplies = 2,
+        SellPotions = 3,
+        ViewStats = 4,
+        Sleep = 5,
+        SaveGame = 6,
+        QuitGame = 7,
+        Cheat = 88
+    }
+
+
 
 
     internal class Program {
@@ -36,16 +57,10 @@
             GameState g = null;
             Console.WriteLine("Welcome to Alchemist!");
             Console.WriteLine("to start new game press 1\nTo load save press 2 \nto quit game press 3");
-            int wyb;
-            bool validInput;
+            int wyb=0;
             do {
                 string input = Console.ReadLine();
-                validInput = int.TryParse(input, out wyb);
-
-                if (!validInput) {
-                    Console.WriteLine("Please input a number.");
-                    continue;
-                }
+                wyb = Numcheck(input);
                 switch (wyb) {
                     case 1:
                         NewGame();
@@ -98,32 +113,31 @@
                 Console.WriteLine("Your station. You see alchemist tools, your window and other construct walking aroud.\nWhat would you like to do?\n1. Make Potion\n2. Buy Supplies\n3. Sell Potions\n4. View Stats\n5.go to sleep\n6. Save Game\n7. Quit Game");
 
                 string input = Console.ReadLine();
-                Numcheck(input);
-                switch (wyb) {
-                    case 1:
+                wyb = Numcheck(input);
+                switch ((Menuoptions)wyb) {
+                    case Menuoptions.MakePotion:
                         alchemy(g);
                         break;
-                    case 2:
+                    case Menuoptions.BuySupplies:
                         shop(g);
-
                         break;
-                    case 3:
+                    case Menuoptions.SellPotions:
                         sell(g);
                         break;
-                    case 4:
+                    case Menuoptions.ViewStats:
                         displaystats(g);
                         break;
-                    case 5:
+                    case Menuoptions.Sleep:
                         sleep(g);
                         break;
-                    case 6:
+                    case Menuoptions.SaveGame:
                         SaveGame(g);
                         break;
-                    case 7:
+                    case Menuoptions.QuitGame:
                         Console.WriteLine("Quitting Game\nThanks for playing!");
                         Environment.Exit(0);
                         break;
-                    case 88:
+                    case Menuoptions.Cheat:
                         g.Miasma += 50;
                         g.Ardent += 50;
                         g.Blood += 50;
@@ -145,21 +159,23 @@
         static void alchemy(GameState g) {
             displaystats(g);
             Console.WriteLine("You approach your alchemist table. What potion would you like to make?");
-            Console.WriteLine("1. View Recipes\n2. Make Health Potion\n3. Make Mana Potion\n4. Make Explosive Potion\n5. Go back to station");
+            string resu = "";
+            if (g.Secretrec == true) { resu = "\n8. Make Resurection potion";};
+            Console.WriteLine("0. View Recipes\n1. Make Health Potion\n2. Make Mana Potion\n3. Make Explosive Potion"+resu+"\n9. Go back to station");
             for (int i = 1; i < GameInfo.Potionname.Length; i++) {
                 Console.WriteLine($"{i}. {GameInfo.Potionname[i - 1]}\n");
             }
             int wyb = 0;
             while (true) {
                 string input = Console.ReadLine();
-                Numcheck(input);
-                switch (wyb) {
-                    case 1:
+                wyb = Numcheck(input);
+                switch ((Potion)wyb) {
+                    case Potion.ListRecipes:
                         for (int i = 0; i < GameInfo.Potionname.Length; i++) {
                             Console.WriteLine($"{g.Inve[i]} {GameInfo.Potionrec[i]}");
                         }
                         break;
-                    case 2:
+                    case Potion.Health:
                         if (g.Blood >= 2 && g.Ardent >= 1) {
                             g.Blood -= 2;
                             g.Ardent -= 1;
@@ -169,7 +185,7 @@
                             Console.WriteLine("Not enough resources");
                         }
                         break;
-                    case 3:
+                    case Potion.Mana:
                         if (g.Blood >= 2 && g.Miasma >= 1) {
                             g.Blood -= 2;
                             g.Miasma -= 1;
@@ -179,7 +195,7 @@
                             Console.WriteLine("Not enough resources");
                         }
                         break;
-                    case 4:
+                    case Potion.Explosive:
                         if (g.Ardent >= 1 && g.Miasma >= 1) {
                             g.Ardent -= 1;
                             g.Miasma -= 1;
@@ -189,7 +205,11 @@
                             Console.WriteLine("Not enough resources");
                         }
                         break;
-                    case 5:
+                    case Potion.Resurrection:
+                        if (g.Secretrec == false) {
+                            Console.WriteLine("[Wrong command]");
+                            break;
+                        }
                         if (g.Blood >= 4 && g.Miasma >= 4 && g.Ardent >= 4) {
                             g.Ardent -= 4;
                             g.Miasma -= 4;
@@ -200,7 +220,7 @@
                             Console.WriteLine("Not enough resources");
                         }
                         break;
-                    case 6:
+                    case Potion.RETURN:
                         return;
                     default:
                         Console.WriteLine("[Wrong command]");
@@ -216,7 +236,7 @@
             while (true) {
                 Console.WriteLine("\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 gold)\n4.talk\n5.Get back to lab");
                 string input = Console.ReadLine();
-                Numcheck(input);
+                wyb = Numcheck(input);
                 switch (wyb) {
                     case 1:
                         if (g.Gold >= 2) {
@@ -276,7 +296,7 @@
             while (true) {
                 Console.WriteLine("\n1.I am new acolyte, i have shop near you\n2.Do you know what happend to previous acolyte?\n3.How is your day?\n4.Goodbye");
                 string input = Console.ReadLine();
-                Numcheck(input);
+                wyb = Numcheck(input);
                 switch (wyb) {
                     case 1:
                         if (g.Gift == 0) {
@@ -374,7 +394,7 @@
             int wyb = 0;
             while (continueLoop == true) {
                 string input = Console.ReadLine();
-                Numcheck(input);
+                wyb = Numcheck(input);
                 switch (wyb) {
                     case 1:
                         int type;
@@ -418,7 +438,7 @@
                                     buylist.Push(type - 1);
                                     Console.WriteLine("And also he wants to buy " + ammount + " potions " + GameInfo.Potionname[type - 1] + "\n1.Sell it\n2.say you dont have it");
                                     input = Console.ReadLine();
-                                    Numcheck(input);
+                                    wyb = Numcheck(input);
                                     if (wyb == 1) {
                                         if (ammount <= g.Inve[type - 1]) {
                                             g.Gold += ammount * GameInfo.Potionval[type - 1];
