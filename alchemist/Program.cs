@@ -93,19 +93,13 @@
         }
 
         static void menu(GameState g) {
-            int wyb;
-            bool validInput;
+            int wyb=0;
             do {
                 Console.WriteLine("Your station. You see alchemist tools, your window and other construct walking aroud.\nWhat would you like to do?\n1. Make Potion\n2. Buy Supplies\n3. Sell Potions\n4. View Stats\n5.go to sleep\n6. Save Game\n7. Quit Game");
-                
-                    string input = Console.ReadLine();
-                    validInput = int.TryParse(input, out wyb);
 
-                    if (!validInput) {
-                        Console.WriteLine("Please input a number.");
-                        continue;
-                    }
-                    switch (wyb) {
+                string input = Console.ReadLine();
+                Numcheck(input);
+                switch (wyb) {
                     case 1:
                         alchemy(g);
                         break;
@@ -155,16 +149,10 @@
             for (int i = 1; i < GameInfo.Potionname.Length; i++) {
                 Console.WriteLine($"{i}. {GameInfo.Potionname[i - 1]}\n");
             }
-            int wyb;
-            bool validInput;
+            int wyb = 0;
             while (true) {
                 string input = Console.ReadLine();
-                validInput = int.TryParse(input, out wyb);
-
-                if (!validInput) {
-                    Console.WriteLine("Please input a number.");
-                    continue;
-                }
+                Numcheck(input);
                 switch (wyb) {
                     case 1:
                         for (int i = 0; i < GameInfo.Potionname.Length; i++) {
@@ -224,17 +212,11 @@
 
         static void shop(GameState g) {
             if (g.Claramad == false) { Console.WriteLine("You approach the shop. Green eyed contruct looks at you, her eyes are happy. 'Hello Sister, what can i give you?'"); }
-            int wyb;
-            bool validInput;
+            int wyb = 0;
             while (true) {
                 Console.WriteLine("\n1.Buy miasma(2 gold)\n2.Buy ardent(2 gold)\n3.Buy blood(1 gold)\n4.talk\n5.Get back to lab");
                 string input = Console.ReadLine();
-                validInput = int.TryParse(input, out wyb);
-
-                if (!validInput) {
-                    Console.WriteLine("Please input a number.");
-                    continue;
-                }
+                Numcheck(input);
                 switch (wyb) {
                     case 1:
                         if (g.Gold >= 2) {
@@ -289,17 +271,12 @@
                 Console.WriteLine("She hugged you and gave you 15 gold");
                 g.Clarahelpedgift = false;
             }
-            int wyb;
-            bool validInput;
+            int wyb = 0;
+
             while (true) {
                 Console.WriteLine("\n1.I am new acolyte, i have shop near you\n2.Do you know what happend to previous acolyte?\n3.How is your day?\n4.Goodbye");
                 string input = Console.ReadLine();
-                validInput = int.TryParse(input, out wyb);
-
-                if (!validInput) {
-                    Console.WriteLine("Please input a number.");
-                    continue;
-                }
+                Numcheck(input);
                 switch (wyb) {
                     case 1:
                         if (g.Gift == 0) {
@@ -394,16 +371,10 @@
             bool continueLoop = true;
             Stack<int> buylist = new Stack<int>();
             Random rnd = new Random();
-            int wyb;
-            bool validInput;
+            int wyb = 0;
             while (continueLoop == true) {
                 string input = Console.ReadLine();
-                validInput = int.TryParse(input, out wyb);
-
-                if (!validInput) {
-                    Console.WriteLine("Please input a number.");
-                    continue;
-                }
+                Numcheck(input);
                 switch (wyb) {
                     case 1:
                         int type;
@@ -447,12 +418,7 @@
                                     buylist.Push(type - 1);
                                     Console.WriteLine("And also he wants to buy " + ammount + " potions " + GameInfo.Potionname[type - 1] + "\n1.Sell it\n2.say you dont have it");
                                     input = Console.ReadLine();
-                                    validInput = int.TryParse(input, out wyb);
-
-                                    if (!validInput) {
-                                        Console.WriteLine("Please input a number.");
-                                        continue;
-                                    }
+                                    Numcheck(input);
                                     if (wyb == 1) {
                                         if (ammount <= g.Inve[type - 1]) {
                                             g.Gold += ammount * GameInfo.Potionval[type - 1];
@@ -569,8 +535,21 @@
 
         }
 
-       
-   
+        static int Numcheck (string input) {
+
+            int wyb;
+            bool validInput = false;
+            do {
+                validInput = int.TryParse(input, out wyb);
+
+                if (!validInput) {
+                    Console.WriteLine("Please input a number.");
+                    input = Console.ReadLine();
+                }
+            } while (!validInput);
+            return wyb;
+        }
+
     }
     }
 
