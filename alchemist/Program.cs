@@ -20,6 +20,7 @@
         public bool Taxduepaid { get; set; } = false;
         public int Reasonlost { get; set; } = 0;
         public bool Secretrec { get; set; } = false;
+        public bool MeetFeron { get; set; } = false;
     }
 
     class GameInfo {
@@ -45,7 +46,8 @@
         ViewStats = 4,
         Sleep = 5,
         SaveGame = 6,
-        QuitGame = 7,
+        Feromenu = 7,
+        QuitGame = 9,
         Cheat = 88
     }
 
@@ -108,9 +110,16 @@
         }
 
         static void menu(GameState g) {
-            int wyb=0;
+            int wyb = 0;
+            string fertalkfirst = "";
+            if (g.MeetFeron == false && g.Weekend == true) {
+                fertalkfirst = "\n7. You see behind window tierd and bored Pladin";
+            }
+            if (g.MeetFeron == true) {
+                fertalkfirst = "\n7. Go to Feron's home";
+            }
             do {
-                Console.WriteLine("Your station. You see alchemist tools, your window and other construct walking aroud.\nWhat would you like to do?\n1. Make Potion\n2. Buy Supplies\n3. Sell Potions\n4. View Stats\n5.go to sleep\n6. Save Game\n7. Quit Game");
+                Console.WriteLine("Your station. You see alchemist tools, your window and other construct walking aroud.\nWhat would you like to do?\n1. Make Potion\n2. Buy Supplies\n3. Sell Potions\n4. View Stats\n5.go to sleep\n6. Save Game"+fertalkfirst+"\n9. Quit Game");
 
                 string input = Console.ReadLine();
                 wyb = Numcheck(input);
@@ -125,13 +134,24 @@
                         sell(g);
                         break;
                     case Menuoptions.ViewStats:
-                        displaystats(g);
                         break;
                     case Menuoptions.Sleep:
+                        displaystats(g);
                         sleep(g);
                         break;
                     case Menuoptions.SaveGame:
                         SaveGame(g);
+                        break;
+                    case Menuoptions.Feromenu:
+                        if (g.MeetFeron == false && g.Weekend == true) {
+
+
+                           talkFer1(g);
+                        }
+                        if (g.MeetFeron == true) {
+                            talkFer2(g);
+                        }
+
                         break;
                     case Menuoptions.QuitGame:
                         Console.WriteLine("Quitting Game\nThanks for playing!");
@@ -364,8 +384,21 @@
             g.Clarahelped = true;
         }
 
+        static void talkFer1(GameState g) {
 
-        static void sleep(GameState g) {
+
+
+
+        }
+
+        static void talkFer2(GameState g) {
+
+
+
+
+        }
+
+            static void sleep(GameState g) {
             Random rnd = new Random();
             g.Daymood = rnd.Next(1, 4);
             g.Day += 1;
@@ -375,6 +408,11 @@
             } else {
                 Console.WriteLine("You go to sleep, taking off your mask you lay into your resting coffin. Day " + (g.Day + 1) + " begins.\nYou hear knocking on your door. It's Clara, she wants to talk to you.");
                 talk2(g);
+            }
+            if (g.Daynumber > 4) {
+                g.Weekend = true;
+            } else {
+                g.Weekend = false;
             }
 
             Console.WriteLine("Today is " + GameInfo.daytype[g.Daynumber] + ".");
